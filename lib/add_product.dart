@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 //import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+
 
 
 class AddProductPage extends StatefulWidget {
@@ -11,8 +14,10 @@ class AddProductPage extends StatefulWidget {
 
 class _AddProductPageState extends State<AddProductPage> {
 
-  List units = ["โหล","กล่อง"];
+  List units = [];
   String _currentUnit;
+
+  String act = "Unit";
 
   File imageFile1;
   File imageFile2;
@@ -23,6 +28,30 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController unitAmount = TextEditingController();
   TextEditingController typeUnit = TextEditingController();
   TextEditingController receiveDetail = TextEditingController();
+
+  _getUiitProduct() async{
+    final res = await http.get('http://wangpharma.com/API/receiveProduct.php?act=$act');
+
+    if(res.statusCode == 200){
+
+      setState(() {
+
+        var jsonData = json.decode(res.body);
+
+        //units = jsonData;
+
+        jsonData.forEach((unit) => units.add(unit['unitName']));
+
+        print(units);
+        return units;
+
+      });
+
+
+    }else{
+      throw Exception('Failed load Json');
+    }
+  }
 
   _onDropDownItemSelected(newValueSelected){
     setState(() {
@@ -69,6 +98,7 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   void initState(){
     super.initState();
+    _getUiitProduct();
   }
 
   @override
@@ -276,14 +306,11 @@ class _AddProductPageState extends State<AddProductPage> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: _decideImageViewFull(),
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: _decideImageViewFull(),
+                  child: Container(
+                    color: Colors.lightBlue,
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text('รายละเอียดสินค้า', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                  )
                 )
               ],
             ),
