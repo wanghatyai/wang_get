@@ -14,7 +14,9 @@ class _AddProductPageState extends State<AddProductPage> {
   List units = ["โหล","กล่อง"];
   String _currentUnit;
 
-  File imageFile;
+  File imageFile1;
+  File imageFile2;
+  File imageFile3;
 
   TextEditingController barcodeProduct = TextEditingController();
   TextEditingController boxAmount = TextEditingController();
@@ -31,13 +33,13 @@ class _AddProductPageState extends State<AddProductPage> {
   _openCamera() async {
       var picture = await ImagePicker.pickImage(source: ImageSource.camera);
       this.setState((){
-        imageFile = picture;
+        imageFile1 = picture;
       });
       //Navigator.of(context).pop();
   }
 
   _decideImageView(){
-    if(imageFile == null){
+    if(imageFile1 == null){
       return Image (
         image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
       );
@@ -46,20 +48,20 @@ class _AddProductPageState extends State<AddProductPage> {
         onTap: () {
           print("open img.");
         },
-        child: Image.file(imageFile, width: 100, height: 100),
+        child: Image.file(imageFile1, width: 100, height: 100),
       );
     }
   }
 
   _decideImageViewFull(){
-    if(imageFile == null){
+    if(imageFile1 == null){
       return Text("ยังไม่ได้ถ่ายรูป");
     }else{
       return GestureDetector(
         onTap: () {
           print("open img.");
         },
-        child: Image.file(imageFile, fit: BoxFit.fitWidth,),
+        child: Image.file(imageFile1, fit: BoxFit.fitWidth,),
       );
     }
   }
@@ -240,10 +242,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูปราคาป้าย", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      _decideImageView(),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
+                            _openCamera();
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
@@ -255,10 +259,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูป LOT สินค้า", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      _decideImageView(),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
+                            _openCamera();
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
