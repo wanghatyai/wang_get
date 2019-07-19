@@ -66,6 +66,20 @@ class _AddProductPageState extends State<AddProductPage> {
       });
       //Navigator.of(context).pop();
   }
+  _openCamera2() async {
+    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState((){
+      imageFile2 = picture;
+    });
+    //Navigator.of(context).pop();
+  }
+  _openCamera3() async {
+    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState((){
+      imageFile3 = picture;
+    });
+    //Navigator.of(context).pop();
+  }
 
   _decideImageView(){
     if(imageFile1 == null){
@@ -78,6 +92,36 @@ class _AddProductPageState extends State<AddProductPage> {
           print("open img.");
         },
         child: Image.file(imageFile1, width: 100, height: 100),
+      );
+    }
+  }
+
+  _decideImageView2(){
+    if(imageFile2 == null){
+      return Image (
+        image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
+      );
+    }else{
+      return GestureDetector(
+        onTap: () {
+          print("open img.");
+        },
+        child: Image.file(imageFile2, width: 100, height: 100),
+      );
+    }
+  }
+
+  _decideImageView3(){
+    if(imageFile3 == null){
+      return Image (
+        image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
+      );
+    }else{
+      return GestureDetector(
+        onTap: () {
+          print("open img.");
+        },
+        child: Image.file(imageFile3, width: 100, height: 100),
       );
     }
   }
@@ -272,12 +316,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูปราคาป้าย", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      _decideImageView(),
+                      _decideImageView2(),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
-                            _openCamera();
+                            _openCamera2();
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
@@ -289,12 +333,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูป LOT สินค้า", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      _decideImageView(),
+                      _decideImageView3(),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
-                            _openCamera();
+                            _openCamera3();
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
