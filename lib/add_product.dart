@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:wang_get/product_scan_model.dart';
+import 'package:wang_get/image_detail.dart';
 
 //import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -89,7 +90,7 @@ class _AddProductPageState extends State<AddProductPage> {
     //Navigator.of(context).pop();
   }
 
-  _decideImageView(){
+  _decideImageView1(){
     if(imageFile1 == null){
       return Image (
         image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
@@ -98,6 +99,9 @@ class _AddProductPageState extends State<AddProductPage> {
       return GestureDetector(
         onTap: () {
           print("open img.");
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFile1)));
         },
         child: Image.file(imageFile1, width: 100, height: 100),
       );
@@ -113,6 +117,9 @@ class _AddProductPageState extends State<AddProductPage> {
       return GestureDetector(
         onTap: () {
           print("open img.");
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFile2)));
         },
         child: Image.file(imageFile2, width: 100, height: 100),
       );
@@ -128,24 +135,15 @@ class _AddProductPageState extends State<AddProductPage> {
       return GestureDetector(
         onTap: () {
           print("open img.");
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFile3)));
         },
         child: Image.file(imageFile3, width: 100, height: 100),
       );
     }
   }
 
-  _decideImageViewFull(){
-    if(imageFile1 == null){
-      return Text("ยังไม่ได้ถ่ายรูป");
-    }else{
-      return GestureDetector(
-        onTap: () {
-          print("open img.");
-        },
-        child: Image.file(imageFile1, fit: BoxFit.fitWidth,),
-      );
-    }
-  }
 
   onSearch(String text) async{
     _search.clear();
@@ -428,7 +426,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูปวันหมดอายุ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      _decideImageView(),
+                      _decideImageView1(),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
