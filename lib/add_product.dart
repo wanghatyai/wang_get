@@ -2,6 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
+import 'package:wang_get/product_scan_model.dart';
+
 //import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -22,6 +26,11 @@ class _AddProductPageState extends State<AddProductPage> {
   File imageFile1;
   File imageFile2;
   File imageFile3;
+
+  var loading = false;
+  String barcode;
+  List<ProductScan> _product = [];
+  List<ProductScan> _search = [];
 
   TextEditingController barcodeProduct = TextEditingController();
   TextEditingController boxAmount = TextEditingController();
@@ -46,7 +55,6 @@ class _AddProductPageState extends State<AddProductPage> {
         return units;
 
       });
-
 
     }else{
       throw Exception('Failed load Json');
@@ -139,6 +147,126 @@ class _AddProductPageState extends State<AddProductPage> {
     }
   }
 
+  onSearch(String text) async{
+    _search.clear();
+    if(text.isEmpty){
+      setState(() {});
+      return;
+    }
+
+    searchProduct(text);
+
+    _product.forEach((f){
+      if(f.productName.contains(text)) _search.add(f);
+    });
+
+    setState(() {});
+  }
+
+  scanBarcode() async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      setState((){
+        this.barcode = barcode;
+        searchProduct(this.barcode);
+      });
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        _showAlertBarcode();
+        print('Camera permission was denied');
+      } else {
+        print('Unknow Error $e');
+      }
+    } on FormatException {
+      print('User returned using the "back"-button before scanning anything.');
+    } catch (e) {
+      print('Unknown error.');
+    }
+  }
+
+  void _showAlertBarcode() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('แจ้งเตือน'),
+          content: Text('คุณไม่เปิดอนุญาตใช้กล้อง'),
+        );
+      },
+    );
+  }
+
+  searchProduct(searchVal) async{
+
+    setState(() {
+      loading = true;
+    });
+    _product.clear();
+
+    //productAll = [];
+
+    final res = await http.get('http://wangpharma.com/API/receiveProduct.php?SearchVal=$searchVal&act=Search');
+
+    if(res.statusCode == 200){
+
+      setState(() {
+
+        //loading = false;
+
+        var jsonData = json.decode(res.body);
+
+        jsonData.forEach((products) =>_product.add(ProductScan.fromJson(products)));
+
+        print(_product);
+        return _product;
+
+      });
+
+    }else{
+      throw Exception('Failed load Json');
+    }
+
+  }
+
+  _getProductInfo(){
+
+    if(!loading){
+      return Text('....');
+    }else{
+      return Container(
+        child: ListView.builder(
+          shrinkWrap:true,
+          itemCount: _product.length,
+          itemBuilder: (context, i){
+            final a = _product[i];
+            return ListTile(
+              contentPadding: EdgeInsets.fromLTRB(10, 1, 10, 1),
+              onTap: (){
+
+              },
+              leading: Image.network('http://www.wangpharma.com/cms/product/${a.productPic}', fit: BoxFit.cover, width: 70, height: 70),
+              title: Text('${a.productName}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('${a.productCode}'),
+                  Text('หน่วยเล็กสุด : ${a.productUnit}', style: TextStyle(color: Colors.blue), overflow: TextOverflow.ellipsis),
+                ],
+              ),
+              /*trailing: IconButton(
+                  icon: Icon(Icons.view_list, color: Colors.teal, size: 40,),
+                  onPressed: (){
+                    //addToOrderFast(a);
+                  }
+              ),*/
+            );
+          },
+        ),
+      );
+    }
+  }
+
   @override
   void initState(){
     super.initState();
@@ -167,8 +295,9 @@ class _AddProductPageState extends State<AddProductPage> {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(25, 0, 10, 0),
-                    child: TextFormField (
+                    child: TextField (
                       controller: barcodeProduct,
+                      onChanged: onSearch,
                       style: TextStyle (
                         fontSize: 18,
                         color: Colors.black,
@@ -353,18 +482,13 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Container(
                     color: Colors.lightBlue,
                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Text('รายละเอียดสินค้า', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                    child: Text('รายละเอียดสินค้า', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center,),
                   )
                 )
               ],
             ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: _decideImageViewFull(),
-                )
-              ],
-            ),
+            _getProductInfo(),
+
           ],
         ),
       ),
