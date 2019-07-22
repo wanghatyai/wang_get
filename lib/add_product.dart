@@ -68,30 +68,33 @@ class _AddProductPageState extends State<AddProductPage> {
     });
   }
 
-  _openCamera() async {
+  _openCamera(camPosition) async {
       var picture = await ImagePicker.pickImage(source: ImageSource.camera);
       this.setState((){
-        imageFile1 = picture;
+        if(camPosition == 1){
+          imageFile1 = picture;
+        }else if(camPosition == 2){
+          imageFile2 = picture;
+        }else{
+          imageFile3 = picture;
+        }
       });
       //Navigator.of(context).pop();
   }
-  _openCamera2() async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState((){
-      imageFile2 = picture;
-    });
-    //Navigator.of(context).pop();
-  }
-  _openCamera3() async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState((){
-      imageFile3 = picture;
-    });
-    //Navigator.of(context).pop();
-  }
 
-  _decideImageView1(){
-    if(imageFile1 == null){
+  _decideImageView(camPosition){
+
+    File imageFileC;
+
+    if(camPosition == 1){
+      imageFileC = imageFile1;
+    }else if(camPosition == 2){
+      imageFileC = imageFile2;
+    }else{
+      imageFileC = imageFile3;
+    }
+
+    if(imageFileC == null){
       return Image (
         image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
       );
@@ -101,49 +104,12 @@ class _AddProductPageState extends State<AddProductPage> {
           print("open img.");
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFile1)));
+              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFileC)));
         },
-        child: Image.file(imageFile1, width: 100, height: 100),
+        child: Image.file(imageFileC, width: 100, height: 100),
       );
     }
   }
-
-  _decideImageView2(){
-    if(imageFile2 == null){
-      return Image (
-        image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
-      );
-    }else{
-      return GestureDetector(
-        onTap: () {
-          print("open img.");
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFile2)));
-        },
-        child: Image.file(imageFile2, width: 100, height: 100),
-      );
-    }
-  }
-
-  _decideImageView3(){
-    if(imageFile3 == null){
-      return Image (
-        image: AssetImage ( "assets/photo_default_2.png" ), width: 100, height: 100,
-      );
-    }else{
-      return GestureDetector(
-        onTap: () {
-          print("open img.");
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ImageDetailPage(imageFile: imageFile3)));
-        },
-        child: Image.file(imageFile3, width: 100, height: 100),
-      );
-    }
-  }
-
 
   onSearch(String text) async{
     _search.clear();
@@ -196,6 +162,9 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   searchProduct(searchVal) async{
+
+    barcodeProduct = TextEditingController(text: searchVal);
+
 
     setState(() {
       loading = true;
@@ -286,6 +255,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       icon: Icon(Icons.settings_overscan, size: 50, color: Colors.red,),
                       onPressed: (){
+                        scanBarcode();
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                       }
                   ),
@@ -306,7 +276,7 @@ class _AddProductPageState extends State<AddProductPage> {
                             fontSize: (15),
                           )
                       ),
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                     ),
                   ),
                 ),
@@ -426,12 +396,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูปวันหมดอายุ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      _decideImageView1(),
+                      _decideImageView(1),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
-                            _openCamera();
+                            _openCamera(1);
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
@@ -443,12 +413,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูปราคาป้าย", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      _decideImageView2(),
+                      _decideImageView(2),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
-                            _openCamera2();
+                            _openCamera(2);
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
@@ -460,12 +430,12 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Column(
                     children: <Widget>[
                       Text("รูป LOT สินค้า", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      _decideImageView3(),
+                      _decideImageView(3),
                       IconButton(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           icon: Icon(Icons.camera_alt, size: 50,),
                           onPressed: (){
-                            _openCamera3();
+                            _openCamera(3);
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                           }
                       ),
@@ -486,7 +456,6 @@ class _AddProductPageState extends State<AddProductPage> {
               ],
             ),
             _getProductInfo(),
-
           ],
         ),
       ),
