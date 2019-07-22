@@ -13,6 +13,8 @@ import 'package:image/image.dart' as img;
 import 'package:wang_get/product_scan_model.dart';
 import 'package:wang_get/image_detail.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 
 
@@ -251,57 +253,111 @@ class _AddProductPageState extends State<AddProductPage> {
 
   _addReceiveProduct() async{
 
-    var uri = Uri.parse("http://wangpharma.com/cms/Models/Warehouse/Add/runningPhoto.php");
-    var request = http.MultipartRequest("POST", uri);
+    if(imageFile1 != null
+        && imageFile2 != null
+        && imageFile3 != null
+        && _product[0].productId != null
+        && boxAmount.text != null
+        && unitAmount.text != null
+        && _currentUnitID != null) {
+      var uri = Uri.parse("http://wangpharma.com/API/addReceiveProduct.php");
+      var request = http.MultipartRequest("POST", uri);
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    empCodeReceive = prefs.getString("empCodeReceive");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      empCodeReceive = prefs.getString("empCodeReceive");
 
-    img.Image preImageFile1 = img.decodeImage(imageFile1.readAsBytesSync());
-    img.Image resizeImage1 = img.copyResize(preImageFile1, width: 400);
+      img.Image preImageFile1 = img.decodeImage(imageFile1.readAsBytesSync());
+      img.Image resizeImage1 = img.copyResize(preImageFile1, width: 400);
 
-    File resizeImageFile1 = File(imageFile1.path)
-      ..writeAsBytesSync(img.encodeJpg(resizeImage1, quality: 85));
+      File resizeImageFile1 = File(imageFile1.path)
+        ..writeAsBytesSync(img.encodeJpg(resizeImage1, quality: 85));
 
-    var stream1 = http.ByteStream(DelegatingStream.typed(resizeImageFile1.openRead()));
-    var imgLength1 = await resizeImageFile1.length();
-    var multipartFile1 = http.MultipartFile("runFile2", stream1, imgLength1, filename: path.basename("resizeImageFile1.jpg"));
+      var stream1 = http.ByteStream(
+          DelegatingStream.typed(resizeImageFile1.openRead()));
+      var imgLength1 = await resizeImageFile1.length();
+      var multipartFile1 = http.MultipartFile("runFile2", stream1, imgLength1,
+          filename: path.basename("resizeImageFile1.jpg"));
 
-    var stream2 = http.ByteStream(DelegatingStream.typed(imageFile2.openRead()));
-    var imgLength2 = await imageFile2.length();
-    var multipartFile2 = http.MultipartFile("runFile2ex", stream2, imgLength2, filename: path.basename("resizeImageFile2.jpg"));
+      img.Image preImageFile2 = img.decodeImage(imageFile2.readAsBytesSync());
+      img.Image resizeImage2 = img.copyResize(preImageFile2, width: 400);
 
-    var stream3 = http.ByteStream(DelegatingStream.typed(imageFile3.openRead()));
-    var imgLength3 = await imageFile3.length();
-    var multipartFile3 = http.MultipartFile("runFile2priceTag", stream3, imgLength3, filename: path.basename("resizeImageFile3.jpg"));
+      File resizeImageFile2 = File(imageFile2.path)
+        ..writeAsBytesSync(img.encodeJpg(resizeImage2, quality: 85));
 
-    request.files.add(multipartFile1);
-    request.files.add(multipartFile2);
-    request.files.add(multipartFile3);
+      var stream2 = http.ByteStream(
+          DelegatingStream.typed(resizeImageFile2.openRead()));
+      var imgLength2 = await resizeImageFile2.length();
+      var multipartFile2 = http.MultipartFile("runFile2ex", stream2, imgLength2,
+          filename: path.basename("resizeImageFile2.jpg"));
 
-    request.fields['runDetail2'] = receiveDetail.text;
-    request.fields['runPeople2'] = empCodeReceive;
+      img.Image preImageFile3 = img.decodeImage(imageFile3.readAsBytesSync());
+      img.Image resizeImage3 = img.copyResize(preImageFile3, width: 400);
 
-    request.fields['idPro2'] = _product[0].productId;
-    request.fields['bcode2'] = _product[0].productBarcode;
-    request.fields['runQ2'] = boxAmount.text;
-    request.fields['runQs2'] = unitAmount.text;
-    request.fields['unit2'] = _currentUnitID;
+      File resizeImageFile3 = File(imageFile3.path)
+        ..writeAsBytesSync(img.encodeJpg(resizeImage3, quality: 85));
 
-    print(request.fields);
-    print(request.files[0].filename);
-    print(request.files[0].length);
-    print(request.files[1].filename);
-    print(request.files[1].length);
+      var stream3 = http.ByteStream(
+          DelegatingStream.typed(resizeImageFile3.openRead()));
+      var imgLength3 = await resizeImageFile3.length();
+      var multipartFile3 = http.MultipartFile(
+          "runFile2priceTag", stream3, imgLength3,
+          filename: path.basename("resizeImageFile3.jpg"));
 
+      request.files.add(multipartFile1);
+      request.files.add(multipartFile2);
+      request.files.add(multipartFile3);
 
-    /*var response = await request.send();
+      request.fields['runDetail2'] = receiveDetail.text;
+      request.fields['runPeople2'] = empCodeReceive;
 
-    if(response.statusCode == 200){
-      print("add OK");
+      request.fields['idPro2'] = _product[0].productId;
+      request.fields['bcode2'] = _product[0].productBarcode;
+      request.fields['runQ2'] = boxAmount.text;
+      request.fields['runQs2'] = unitAmount.text;
+      request.fields['unit2'] = _currentUnitID;
+
+      print(request.fields);
+      print(request.files[0].filename);
+      print(request.files[0].length);
+      print(request.files[1].filename);
+      print(request.files[1].length);
+      print(request.files[2].filename);
+      print(request.files[2].length);
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        print("add OK");
+        print(response);
+        showToastAddFast();
+      } else {
+        print("add Error");
+      }
     }else{
-      print("add Error");
-    }*/
+      _showAlert();
+    }
+  }
+
+  showToastAddFast(){
+    Fluttertoast.showToast(
+        msg: "เพิ่มรายการแล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 3
+    );
+  }
+
+  _showAlert() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('แจ้งเตือน'),
+          content: Text('คุณกรอกรายละเอียดไม่ครบถ้วน'),
+        );
+      },
+    );
   }
 
   @override
