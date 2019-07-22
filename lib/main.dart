@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:wang_get/home.dart';
 
@@ -35,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+
   TextEditingController ctrlUser = TextEditingController();
   TextEditingController ctrlPass = TextEditingController();
 
@@ -57,9 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _doLogin(){
+  _doLogin() async{
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if(ctrlUser.text == '0582' && ctrlPass.text == '0582'){
+
+      prefs.setString("empCodeReceive", ctrlUser.text);
 
       Navigator.pushReplacementNamed(context, '/Home');
 
