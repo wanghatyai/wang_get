@@ -2,17 +2,25 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:async/async.dart';
+import 'package:path/path.dart' as path;
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
+
 import 'package:wang_get/product_scan_model.dart';
 import 'package:wang_get/image_detail.dart';
 
-//import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 
 
 
 class AddProductPage extends StatefulWidget {
+
+  //var empCodeReceive;
+  //AddProductPage({Key key, this.empCodeReceive}) : super(key: key);
+
   @override
   _AddProductPageState createState() => _AddProductPageState();
 }
@@ -20,13 +28,17 @@ class AddProductPage extends StatefulWidget {
 class _AddProductPageState extends State<AddProductPage> {
 
   List units = [];
+  List unitsID = [];
   String _currentUnit;
+  var _currentUnitID;
 
   String act = "Unit";
 
   File imageFile1;
   File imageFile2;
   File imageFile3;
+
+  var empCodeReceive;
 
   var loading = false;
   String barcode;
@@ -51,8 +63,10 @@ class _AddProductPageState extends State<AddProductPage> {
         //units = jsonData;
 
         jsonData.forEach((unit) => units.add(unit['unitName']));
+        jsonData.forEach((unitID) => unitsID.add(unitID['unitID']));
 
         print(units);
+        print(unitsID);
         return units;
 
       });
@@ -234,6 +248,62 @@ class _AddProductPageState extends State<AddProductPage> {
     }
   }
 
+
+  _addReceiveProduct() async{
+
+    var uri = Uri.parse("http://wangpharma.com/cms/Models/Warehouse/Add/runningPhoto.php");
+    var request = http.MultipartRequest("POST", uri);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    empCodeReceive = prefs.getString("empCodeReceive");
+
+    img.Image preImageFile1 = img.decodeImage(imageFile1.readAsBytesSync());
+    img.Image resizeImage1 = img.copyResize(preImageFile1, width: 400);
+
+    File resizeImageFile1 = File(imageFile1.path)
+      ..writeAsBytesSync(img.encodeJpg(resizeImage1, quality: 85));
+
+    var stream1 = http.ByteStream(DelegatingStream.typed(resizeImageFile1.openRead()));
+    var imgLength1 = await resizeImageFile1.length();
+    var multipartFile1 = http.MultipartFile("runFile2", stream1, imgLength1, filename: path.basename("resizeImageFile1.jpg"));
+
+    var stream2 = http.ByteStream(DelegatingStream.typed(imageFile2.openRead()));
+    var imgLength2 = await imageFile2.length();
+    var multipartFile2 = http.MultipartFile("runFile2ex", stream2, imgLength2, filename: path.basename("resizeImageFile2.jpg"));
+
+    var stream3 = http.ByteStream(DelegatingStream.typed(imageFile3.openRead()));
+    var imgLength3 = await imageFile3.length();
+    var multipartFile3 = http.MultipartFile("runFile2priceTag", stream3, imgLength3, filename: path.basename("resizeImageFile3.jpg"));
+
+    request.files.add(multipartFile1);
+    request.files.add(multipartFile2);
+    request.files.add(multipartFile3);
+
+    request.fields['runDetail2'] = receiveDetail.text;
+    request.fields['runPeople2'] = empCodeReceive;
+
+    request.fields['idPro2'] = _product[0].productId;
+    request.fields['bcode2'] = _product[0].productBarcode;
+    request.fields['runQ2'] = boxAmount.text;
+    request.fields['runQs2'] = unitAmount.text;
+    request.fields['unit2'] = _currentUnitID;
+
+    print(request.fields);
+    print(request.files[0].filename);
+    print(request.files[0].length);
+    print(request.files[1].filename);
+    print(request.files[1].length);
+
+
+    /*var response = await request.send();
+
+    if(response.statusCode == 200){
+      print("add OK");
+    }else{
+      print("add Error");
+    }*/
+  }
+
   @override
   void initState(){
     super.initState();
@@ -286,6 +356,7 @@ class _AddProductPageState extends State<AddProductPage> {
                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       icon: Icon(Icons.add_circle, size: 50, color: Colors.green,),
                       onPressed: (){
+                        _addReceiveProduct();
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
                       }
                   ),
@@ -351,8 +422,11 @@ class _AddProductPageState extends State<AddProductPage> {
                           );
                         }).toList(),
                         onChanged: (newValueSelected){
+                          var tempIndex = units.indexOf(newValueSelected);
                           _onDropDownItemSelected(newValueSelected);
+                          _currentUnitID = unitsID[tempIndex];
                           print(this._currentUnit);
+                          print(_currentUnitID);
                         },
                         value: _currentUnit,
                       ),
