@@ -12,6 +12,7 @@ import 'package:image/image.dart' as img;
 
 import 'package:wang_get/product_scan_model.dart';
 import 'package:wang_get/image_detail.dart';
+import 'package:wang_get/home.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -179,7 +180,9 @@ class _AddProductPageState extends State<AddProductPage> {
 
   searchProduct(searchVal) async{
 
-    barcodeProduct = TextEditingController(text: searchVal);
+    //barcodeProduct.text = searchVal;
+
+    //barcodeProduct = TextEditingController(text: searchVal);
 
 
     setState(() {
@@ -256,7 +259,7 @@ class _AddProductPageState extends State<AddProductPage> {
     if(imageFile1 != null
         && imageFile2 != null
         && imageFile3 != null
-        && _product[0].productId != null
+        && _product != []
         && boxAmount.text != null
         && unitAmount.text != null
         && _currentUnitID != null) {
@@ -330,9 +333,15 @@ class _AddProductPageState extends State<AddProductPage> {
         print("add OK");
         print(response);
         showToastAddFast();
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Home()));
+
       } else {
         print("add Error");
       }
+
     }else{
       _showAlert();
     }
