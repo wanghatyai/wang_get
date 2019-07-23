@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if(ctrlUser.text == '0582' && ctrlPass.text == '0582'){
+    if(ctrlUser.text == '0377' && ctrlPass.text == '0377'){
 
       prefs.setString("empCodeReceive", ctrlUser.text);
 
