@@ -17,8 +17,6 @@ import 'package:wang_get/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 
-
-
 class AddProductPage extends StatefulWidget {
 
   //var empCodeReceive;
@@ -44,6 +42,8 @@ class _AddProductPageState extends State<AddProductPage> {
   var empCodeReceive;
 
   var loading = false;
+  var loadingAdd = false;
+
   String barcode;
   List<ProductScan> _product = [];
   List<ProductScan> _search = [];
@@ -53,6 +53,7 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController unitAmount = TextEditingController();
   TextEditingController typeUnit = TextEditingController();
   TextEditingController receiveDetail = TextEditingController();
+  TextEditingController receiveLot = TextEditingController();
 
   _getUiitProduct() async{
     final res = await http.get('http://wangpharma.com/API/receiveProduct.php?act=$act');
@@ -256,6 +257,10 @@ class _AddProductPageState extends State<AddProductPage> {
 
   _addReceiveProduct() async{
 
+    setState(() {
+      loadingAdd = true;
+    });
+
     if(imageFile1 != null
         && imageFile2 != null
         && imageFile3 != null
@@ -318,6 +323,7 @@ class _AddProductPageState extends State<AddProductPage> {
       request.fields['runQ2'] = boxAmount.text;
       request.fields['runQs2'] = unitAmount.text;
       request.fields['unit2'] = _currentUnitID;
+      request.fields['lot'] = receiveLot.text;
 
       print(request.fields);
       print(request.files[0].filename);
@@ -330,9 +336,12 @@ class _AddProductPageState extends State<AddProductPage> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
+
         print("add OK");
         print(response);
         showToastAddFast();
+
+        loadingAdd = false;
 
         Navigator.pushReplacement(
             context,
@@ -344,6 +353,9 @@ class _AddProductPageState extends State<AddProductPage> {
 
     }else{
       _showAlert();
+
+        loadingAdd = false;
+
     }
   }
 
@@ -417,13 +429,14 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
-                  child: IconButton(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      icon: Icon(Icons.add_circle, size: 50, color: Colors.green,),
-                      onPressed: (){
-                        _addReceiveProduct();
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
-                      }
+                  child: loadingAdd ? CircularProgressIndicator()
+                      :IconButton(
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        icon: Icon(Icons.add_circle, size: 50, color: Colors.green,),
+                        onPressed: (){
+                          _addReceiveProduct();
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage()));
+                        }
                   ),
                 ),
               ],
@@ -502,9 +515,9 @@ class _AddProductPageState extends State<AddProductPage> {
             Row(
               children: <Widget>[
                 Expanded(
-                  //flex: 2,
+                  flex: 2,
                   child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: TextFormField (
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
@@ -516,6 +529,27 @@ class _AddProductPageState extends State<AddProductPage> {
                       ),
                       decoration: InputDecoration (
                           labelText: 'เพิ่มเติม*',
+                          labelStyle: TextStyle (
+                            fontSize: (15),
+                          )
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: TextFormField (
+                      keyboardType: TextInputType.text,
+                      textAlign: TextAlign.start,
+                      controller: receiveLot,
+                      style: TextStyle (
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                      decoration: InputDecoration (
+                          labelText: 'Lot สินค้า',
                           labelStyle: TextStyle (
                             fontSize: (15),
                           )
