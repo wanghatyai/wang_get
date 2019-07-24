@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:wang_get/product_model.dart';
+import 'package:wang_get/report_detail.dart';
 
 class ReportPage extends StatefulWidget {
   @override
@@ -79,9 +80,9 @@ class _ReportPageState extends State<ReportPage> {
           return ListTile(
             contentPadding: EdgeInsets.fromLTRB(10, 1, 10, 1),
             onTap: (){
-              /*Navigator.push(
+              Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => productDetailPage(product: productAll[index])));*/
+                  MaterialPageRoute(builder: (context) => ReportDetailPage(receiveProducts: productAll[index])));
             },
             leading: Image.network('http://www.wangpharma.com/cms/product/${productAll[index].recevicProductPic}', fit: BoxFit.cover, width: 70, height: 70,),
             title: Text('${productAll[index].recevicProductName}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
