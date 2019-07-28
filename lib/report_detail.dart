@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:wang_get/report_image_detail.dart';
+import 'package:wang_get/report.dart' as reportPage;
+
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ReportDetailPage extends StatefulWidget {
 
@@ -12,6 +16,60 @@ class ReportDetailPage extends StatefulWidget {
 }
 
 class _ReportDetailPageState extends State<ReportDetailPage> {
+
+  showDialogDelConfirm(id) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("แจ้งเตือน"),
+          content: Text("ยืนยันลบรายการ"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              color: Colors.green,
+              child: Text("ตกลง",style: TextStyle(color: Colors.white, fontSize: 18),),
+              onPressed: () {
+                removeOrder(id);
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, '/Home');
+                //Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  removeOrder(id) async{
+
+    final response = await http.post(
+        'http://wangpharma.com/API/delReceiveProduct.php',
+        body: {'id': id, 'act': "Del"});
+
+    if(response.statusCode == 200){
+      print('del OK');
+
+    }else{
+      print('Connect ERROR');
+    }
+    //
+    showToastRemove();
+    print(id);
+  }
+
+  showToastRemove(){
+    Fluttertoast.showToast(
+        msg: "ลบรายการแล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 3
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,6 +157,32 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                       ],
                     ),
                   ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
+                      child: MaterialButton(
+                        color: Colors.red,
+                        textColor: Colors.white,
+                        minWidth: double.infinity,
+                        height: 50,
+                        child: Text(
+                          "ลบรายบการ",
+                          style: new TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        //onPressed: (){Navigator.pushReplacementNamed(context, '/Home');},
+                        onPressed: () {
+                          showDialogDelConfirm(widget.receiveProducts.recevicId);
+                        },
+                      ),
+                    )
+                  )
                 ],
               )
             ],
