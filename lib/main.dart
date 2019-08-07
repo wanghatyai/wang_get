@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:wang_get/home.dart';
 
 void main() => runApp(MyApp());
@@ -63,11 +66,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if(ctrlUser.text == '0377' && ctrlPass.text == '0377'){
+    final response = await http.post(
+        'http://wangpharma.com/API/receiveProduct.php',
+        body: {'username': ctrlUser.text, 'password': ctrlPass.text, 'act': 'Login'});
 
-      prefs.setString("empCodeReceive", ctrlUser.text);
+    if(ctrlUser.text != '' && ctrlPass.text != '' && response.statusCode == 200){
 
-      Navigator.pushReplacementNamed(context, '/Home');
+      var jsonResponse = json.decode(response.body);
+
+      //print(jsonResponse);
+
+      if(!jsonResponse.isEmpty){
+
+        prefs.setString("empCodeReceive", ctrlUser.text);
+
+        Navigator.pushReplacementNamed(context, '/Home');
+      }else{
+        _showAlert();
+      }
 
     }else{
       _showAlert();
