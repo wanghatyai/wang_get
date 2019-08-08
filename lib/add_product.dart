@@ -541,7 +541,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: Container(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: TextFormField (
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       textAlign: TextAlign.start,
                       controller: receiveLot,
                       style: TextStyle (
