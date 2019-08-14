@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final response = await http.post(
-        'http://wangpharma.com/API/receiveProduct.php',
+        'https://wangpharma.com/API/receiveProduct.php',
         body: {'username': ctrlUser.text, 'password': ctrlPass.text, 'act': 'Login'});
 
     if(ctrlUser.text != '' && ctrlPass.text != '' && response.statusCode == 200){
@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         fontSize: 15,
                       ),
                     ),
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                   ),
                 ],
               ),

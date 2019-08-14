@@ -23,7 +23,7 @@ class _ReportPageState extends State<ReportPage> {
 
   getReceiveProduct() async{
 
-    final res = await http.get('http://wangpharma.com/API/receiveProduct.php?PerPage=$perPage&act=$act');
+    final res = await http.get('https://wangpharma.com/API/receiveProduct.php?PerPage=$perPage&act=$act');
 
     if(res.statusCode == 200){
 
@@ -84,7 +84,7 @@ class _ReportPageState extends State<ReportPage> {
                   context,
                   MaterialPageRoute(builder: (context) => ReportDetailPage(receiveProducts: productAll[index])));
             },
-            leading: Image.network('http://www.wangpharma.com/cms/product/${productAll[index].recevicProductPic}', fit: BoxFit.cover, width: 70, height: 70,),
+            leading: Image.network('https://www.wangpharma.com/cms/product/${productAll[index].recevicProductPic}', fit: BoxFit.cover, width: 70, height: 70,),
             title: Text('${productAll[index].recevicProductName}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

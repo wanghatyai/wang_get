@@ -47,7 +47,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   removeOrder(id) async{
 
     final response = await http.post(
-        'http://wangpharma.com/API/delReceiveProduct.php',
+        'https://wangpharma.com/API/delReceiveProduct.php',
         body: {'id': id, 'act': "Del"});
 
     if(response.statusCode == 200){
@@ -92,7 +92,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 children: <Widget>[
                   Expanded(
                     child: ListTile(
-                      leading: Image.network('http://www.wangpharma.com/cms/product/${widget.receiveProducts.recevicProductPic}', fit: BoxFit.cover, width: 70, height: 70),
+                      leading: Image.network('https://www.wangpharma.com/cms/product/${widget.receiveProducts.recevicProductPic}', fit: BoxFit.cover, width: 70, height: 70),
                       title: Text('${widget.receiveProducts.recevicProductName}', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +120,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                               context,
                               MaterialPageRoute(builder: (context) => ReportImageDetailPage(receiveProductPic: widget.receiveProducts.recevicPic)));
                           },
-                          child: Image.network('http://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProducts.recevicPic}', fit: BoxFit.cover, width: 120, height: 100),
+                          child: Image.network('https://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProducts.recevicPic}', fit: BoxFit.cover, width: 120, height: 100),
                         ),
                       ],
                     ),
@@ -136,7 +136,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 context,
                                 MaterialPageRoute(builder: (context) => ReportImageDetailPage(receiveProductPic: widget.receiveProducts.recevicPicEx)));
                           },
-                          child: Image.network('http://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProducts.recevicPicEx}', fit: BoxFit.cover, width: 120, height: 100),
+                          child: Image.network('https://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProducts.recevicPicEx}', fit: BoxFit.cover, width: 120, height: 100),
                         ),
                       ],
                     ),
@@ -152,7 +152,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 context,
                                 MaterialPageRoute(builder: (context) => ReportImageDetailPage(receiveProductPic: widget.receiveProducts.recevicPicPriceTag)));
                           },
-                          child: Image.network('http://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProducts.recevicPicPriceTag}', fit: BoxFit.cover, width: 120, height: 100),
+                          child: Image.network('https://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProducts.recevicPicPriceTag}', fit: BoxFit.cover, width: 120, height: 100),
                         ),
                       ],
                     ),

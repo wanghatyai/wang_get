@@ -56,7 +56,7 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController receiveLot = TextEditingController();
 
   _getUiitProduct() async{
-    final res = await http.get('http://wangpharma.com/API/receiveProduct.php?act=$act');
+    final res = await http.get('https://wangpharma.com/API/receiveProduct.php?act=$act');
 
     if(res.statusCode == 200){
 
@@ -193,7 +193,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
     //productAll = [];
 
-    final res = await http.get('http://wangpharma.com/API/receiveProduct.php?SearchVal=$searchVal&act=Search');
+    final res = await http.get('https://wangpharma.com/API/receiveProduct.php?SearchVal=$searchVal&act=Search');
 
     if(res.statusCode == 200){
 
@@ -232,7 +232,7 @@ class _AddProductPageState extends State<AddProductPage> {
               onTap: (){
 
               },
-              leading: Image.network('http://www.wangpharma.com/cms/product/${a.productPic}', fit: BoxFit.cover, width: 70, height: 70),
+              leading: Image.network('https://www.wangpharma.com/cms/product/${a.productPic}', fit: BoxFit.cover, width: 70, height: 70),
               title: Text('${a.productName}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +268,7 @@ class _AddProductPageState extends State<AddProductPage> {
         && boxAmount.text != null
         && unitAmount.text != null
         && _currentUnitID != null) {
-      var uri = Uri.parse("http://wangpharma.com/API/addReceiveProduct.php");
+      var uri = Uri.parse("https://wangpharma.com/API/addReceiveProduct.php");
       var request = http.MultipartRequest("POST", uri);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();

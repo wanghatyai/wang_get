@@ -13,7 +13,7 @@ class _ReportImageDetailPageState extends State<ReportImageDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Image.network('http://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProductPic}'),
+        child: Image.network('https://www.wangpharma.com/cms/FileUpload/Warehouse/receiveBox/${widget.receiveProductPic}'),
     );
   }
 }
