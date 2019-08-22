@@ -190,6 +190,8 @@ class _AddProductPageState extends State<AddProductPage> {
       loading = true;
     });
     _product.clear();
+    units.clear();
+    unitsID.clear();
 
     //productAll = [];
 
@@ -204,6 +206,21 @@ class _AddProductPageState extends State<AddProductPage> {
         var jsonData = json.decode(res.body);
 
         jsonData.forEach((products) =>_product.add(ProductScan.fromJson(products)));
+
+        setState(() {
+          if(_product[0].productUnit != null && _product[0].productUnit != ''){
+            unitsID.add(1);
+            units.add(_product[0].productUnit);
+          }
+          if(_product[0].productUnit2 != null && _product[0].productUnit2 != ''){
+            unitsID.add(2);
+            units.add(_product[0].productUnit2);
+          }
+          if(_product[0].productUnit3 != null && _product[0].productUnit3 != ''){
+            unitsID.add(3);
+            units.add(_product[0].productUnit3);
+          }
+        });
 
         print(_product);
         return _product;
@@ -322,7 +339,8 @@ class _AddProductPageState extends State<AddProductPage> {
       request.fields['bcode2'] = _product[0].productBarcode;
       request.fields['runQ2'] = boxAmount.text;
       request.fields['runQs2'] = unitAmount.text;
-      request.fields['unit2'] = _currentUnitID;
+      request.fields['unit2'] = _currentUnitID.toString();
+      request.fields['unit2Val'] = _currentUnit;
       request.fields['lot'] = receiveLot.text;
 
       print(request.fields);
@@ -384,7 +402,7 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   void initState(){
     super.initState();
-    _getUiitProduct();
+    //_getUiitProduct();
   }
 
   @override
