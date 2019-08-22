@@ -5,6 +5,8 @@ class ProductScan{
   final String productBarcode;
   final String productPic;
   final String productUnit;
+  final String productUnit2;
+  final String productUnit3;
 
   ProductScan({
     this.productId,
@@ -12,7 +14,9 @@ class ProductScan{
     this.productCode,
     this.productBarcode,
     this.productPic,
-    this.productUnit
+    this.productUnit,
+    this.productUnit2,
+    this.productUnit3
   });
 
   factory ProductScan.fromJson(Map<String, dynamic> json){
@@ -23,6 +27,8 @@ class ProductScan{
       productBarcode: json['bcode'],
       productPic: json['pic'],
       productUnit: json['unit1'],
+      productUnit2: json['unit2'],
+      productUnit3: json['unit3'],
     );
   }
 
