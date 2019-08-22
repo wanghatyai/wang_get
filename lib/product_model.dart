@@ -16,6 +16,7 @@ class Product{
   final String recevicTCqtyBox;
   final String recevicTCqtySub;
   final String recevicProductUnit;
+  final String recevicProductUnitNew;
   final String recevicProductName;
   final String recevicProductCode;
   final String recevicProductCompany;
@@ -39,6 +40,7 @@ class Product{
     this.recevicTCqtyBox,
     this.recevicTCqtySub,
     this.recevicProductUnit,
+    this.recevicProductUnitNew,
     this.recevicProductName,
     this.recevicProductCode,
     this.recevicProductCompany,
@@ -64,6 +66,7 @@ class Product{
       recevicTCqtyBox: json['WH_receiveBox_TC_qtyBox'],
       recevicTCqtySub: json['WH_receiveBox_TC_qtySub'],
       recevicProductUnit: json['unitName'],
+      recevicProductUnitNew: json['WH_receiveBox_TC_unit'],
       recevicProductName: json['nproduct'],
       recevicProductCode: json['pcode'],
       recevicProductCompany: json['company'],
