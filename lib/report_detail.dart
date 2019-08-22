@@ -100,7 +100,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                           Text('Code : ${widget.receiveProducts.recevicProductCode}'),
                           Text('Barcode : ${widget.receiveProducts.recevicTCbarcode}'),
                           Text('ลัง : ${widget.receiveProducts.recevicTCqtyBox}', style: TextStyle(color: Colors.red),),
-                          Text('หน่วยย่อย : ${widget.receiveProducts.recevicTCqtySub} ${widget.receiveProducts.recevicProductUnit}', style: TextStyle(color: Colors.lightBlue),),
+                          widget.receiveProducts.recevicProductUnitNew.isEmpty ?
+                                Text('หน่วยย่อย : ${widget.receiveProducts.recevicTCqtySub} ${widget.receiveProducts.recevicProductUnit}', style: TextStyle(color: Colors.lightBlue),)
+                              : Text('หน่วยย่อย : ${widget.receiveProducts.recevicTCqtySub} ${widget.receiveProducts.recevicProductUnitNew}', style: TextStyle(color: Colors.lightBlue),),
                         ],
                       ),
                     ),
