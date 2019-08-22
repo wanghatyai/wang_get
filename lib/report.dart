@@ -91,7 +91,9 @@ class _ReportPageState extends State<ReportPage> {
               children: <Widget>[
                 Text('${productAll[index].recevicProductCode}'),
                 Text('ลัง : ${productAll[index].recevicTCqtyBox}', style: TextStyle(color: Colors.red),),
-                Text('หน่วยย่อย : ${productAll[index].recevicTCqtySub} ${productAll[index].recevicProductUnit}', style: TextStyle(color: Colors.lightBlue),),
+                productAll[index].recevicProductUnitNew.isEmpty ?
+                      Text('หน่วยย่อย : ${productAll[index].recevicTCqtySub} ${productAll[index].recevicProductUnit}', style: TextStyle(color: Colors.lightBlue))
+                    : Text('หน่วยย่อย : ${productAll[index].recevicTCqtySub} ${productAll[index].recevicProductUnitNew}', style: TextStyle(color: Colors.lightBlue)),
               ],
             ),
             trailing: IconButton(
