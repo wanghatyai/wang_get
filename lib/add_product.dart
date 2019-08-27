@@ -372,8 +372,6 @@ class _AddProductPageState extends State<AddProductPage> {
       print(request.files[2].filename);
       print(request.files[2].length);
 
-
-
       var response = await request.send();
 
       if (response.statusCode == 200) {
