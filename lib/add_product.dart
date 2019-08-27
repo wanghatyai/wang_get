@@ -271,12 +271,27 @@ class _AddProductPageState extends State<AddProductPage> {
     }
   }
 
-
-  _addReceiveProduct() async{
+  resizeImgFun(imageFile){
 
     setState(() {
       loadingAdd = true;
     });
+
+    img.Image preImageFile = img.decodeImage(imageFile.readAsBytesSync());
+    img.Image resizeImage = img.copyResize(preImageFile, width: 800);
+
+    File resizeImageFile = File(imageFile.path)
+      ..writeAsBytesSync(img.encodeJpg(resizeImage, quality: 70));
+
+    return resizeImageFile;
+  }
+
+
+  _addReceiveProduct() async{
+
+    /*setState(() {
+      loadingAdd = true;
+    });*/
 
     if(imageFile1 != null
         && imageFile2 != null
@@ -291,11 +306,13 @@ class _AddProductPageState extends State<AddProductPage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       empCodeReceive = prefs.getString("empCodeReceive");
 
-      img.Image preImageFile1 = img.decodeImage(imageFile1.readAsBytesSync());
+      /*img.Image preImageFile1 = img.decodeImage(imageFile1.readAsBytesSync());
       img.Image resizeImage1 = img.copyResize(preImageFile1, width: 400);
 
       File resizeImageFile1 = File(imageFile1.path)
-        ..writeAsBytesSync(img.encodeJpg(resizeImage1, quality: 85));
+        ..writeAsBytesSync(img.encodeJpg(resizeImage1, quality: 85));*/
+
+      File resizeImageFile1 = await resizeImgFun(imageFile1);
 
       var stream1 = http.ByteStream(
           DelegatingStream.typed(resizeImageFile1.openRead()));
@@ -303,11 +320,13 @@ class _AddProductPageState extends State<AddProductPage> {
       var multipartFile1 = http.MultipartFile("runFile2", stream1, imgLength1,
           filename: path.basename("resizeImageFile1.jpg"));
 
-      img.Image preImageFile2 = img.decodeImage(imageFile2.readAsBytesSync());
+      /*img.Image preImageFile2 = img.decodeImage(imageFile2.readAsBytesSync());
       img.Image resizeImage2 = img.copyResize(preImageFile2, width: 400);
 
       File resizeImageFile2 = File(imageFile2.path)
-        ..writeAsBytesSync(img.encodeJpg(resizeImage2, quality: 85));
+        ..writeAsBytesSync(img.encodeJpg(resizeImage2, quality: 85));*/
+
+      File resizeImageFile2 = await resizeImgFun(imageFile2);
 
       var stream2 = http.ByteStream(
           DelegatingStream.typed(resizeImageFile2.openRead()));
@@ -315,11 +334,13 @@ class _AddProductPageState extends State<AddProductPage> {
       var multipartFile2 = http.MultipartFile("runFile2ex", stream2, imgLength2,
           filename: path.basename("resizeImageFile2.jpg"));
 
-      img.Image preImageFile3 = img.decodeImage(imageFile3.readAsBytesSync());
+      /*img.Image preImageFile3 = img.decodeImage(imageFile3.readAsBytesSync());
       img.Image resizeImage3 = img.copyResize(preImageFile3, width: 400);
 
       File resizeImageFile3 = File(imageFile3.path)
-        ..writeAsBytesSync(img.encodeJpg(resizeImage3, quality: 85));
+        ..writeAsBytesSync(img.encodeJpg(resizeImage3, quality: 85));*/
+
+      File resizeImageFile3 = await resizeImgFun(imageFile3);
 
       var stream3 = http.ByteStream(
           DelegatingStream.typed(resizeImageFile3.openRead()));
@@ -351,6 +372,8 @@ class _AddProductPageState extends State<AddProductPage> {
       print(request.files[2].filename);
       print(request.files[2].length);
 
+
+
       var response = await request.send();
 
       if (response.statusCode == 200) {
@@ -359,11 +382,19 @@ class _AddProductPageState extends State<AddProductPage> {
         print(response);
         showToastAddFast();
 
-        loadingAdd = false;
+        /*loadingAdd = false;
 
         Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Home()));
+            MaterialPageRoute(builder: (context) => Home()));*/
+
+       Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Home())).then((r){
+            setState(() {
+              loadingAdd = false;
+            });
+      });
 
       } else {
         print("add Error");
@@ -372,7 +403,9 @@ class _AddProductPageState extends State<AddProductPage> {
     }else{
       _showAlert();
 
-        loadingAdd = false;
+        setState(() {
+          loadingAdd = false;
+        });
 
     }
   }
@@ -403,6 +436,12 @@ class _AddProductPageState extends State<AddProductPage> {
   void initState(){
     super.initState();
     //_getUiitProduct();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
