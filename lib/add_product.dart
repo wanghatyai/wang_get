@@ -33,6 +33,12 @@ class _AddProductPageState extends State<AddProductPage> {
   String _currentUnit;
   var _currentUnitID;
 
+  List<int> imageBytes1;
+  List<int> imageBytes2;
+  List<int> imageBytes3;
+
+  List<int> responseBody = [];
+
   String act = "Unit";
 
   File imageFile1;
@@ -312,13 +318,16 @@ class _AddProductPageState extends State<AddProductPage> {
       File resizeImageFile1 = File(imageFile1.path)
         ..writeAsBytesSync(img.encodeJpg(resizeImage1, quality: 85));*/
 
-      File resizeImageFile1 = await resizeImgFun(imageFile1);
+      //File resizeImageFile1 = await resizeImgFun(imageFile1);
 
-      var stream1 = http.ByteStream(
+      imageBytes1 = imageFile1.readAsBytesSync();
+      String image1B64 = base64Encode(imageBytes1);
+
+      /*var stream1 = http.ByteStream(
           DelegatingStream.typed(resizeImageFile1.openRead()));
       var imgLength1 = await resizeImageFile1.length();
       var multipartFile1 = http.MultipartFile("runFile2", stream1, imgLength1,
-          filename: path.basename("resizeImageFile1.jpg"));
+          filename: path.basename("resizeImageFile1.jpg"));*/
 
       /*img.Image preImageFile2 = img.decodeImage(imageFile2.readAsBytesSync());
       img.Image resizeImage2 = img.copyResize(preImageFile2, width: 400);
@@ -326,13 +335,16 @@ class _AddProductPageState extends State<AddProductPage> {
       File resizeImageFile2 = File(imageFile2.path)
         ..writeAsBytesSync(img.encodeJpg(resizeImage2, quality: 85));*/
 
-      File resizeImageFile2 = await resizeImgFun(imageFile2);
+      //File resizeImageFile2 = await resizeImgFun(imageFile2);
 
-      var stream2 = http.ByteStream(
+      imageBytes2 = imageFile2.readAsBytesSync();
+      String image2B64 = base64Encode(imageBytes2);
+
+      /*var stream2 = http.ByteStream(
           DelegatingStream.typed(resizeImageFile2.openRead()));
       var imgLength2 = await resizeImageFile2.length();
       var multipartFile2 = http.MultipartFile("runFile2ex", stream2, imgLength2,
-          filename: path.basename("resizeImageFile2.jpg"));
+          filename: path.basename("resizeImageFile2.jpg"));*/
 
       /*img.Image preImageFile3 = img.decodeImage(imageFile3.readAsBytesSync());
       img.Image resizeImage3 = img.copyResize(preImageFile3, width: 400);
@@ -340,18 +352,26 @@ class _AddProductPageState extends State<AddProductPage> {
       File resizeImageFile3 = File(imageFile3.path)
         ..writeAsBytesSync(img.encodeJpg(resizeImage3, quality: 85));*/
 
-      File resizeImageFile3 = await resizeImgFun(imageFile3);
+      //File resizeImageFile3 = await resizeImgFun(imageFile3);
 
-      var stream3 = http.ByteStream(
+      imageBytes3 = imageFile3.readAsBytesSync();
+      String image3B64 = base64Encode(imageBytes3);
+
+      /*var stream3 = http.ByteStream(
           DelegatingStream.typed(resizeImageFile3.openRead()));
       var imgLength3 = await resizeImageFile3.length();
       var multipartFile3 = http.MultipartFile(
           "runFile2priceTag", stream3, imgLength3,
-          filename: path.basename("resizeImageFile3.jpg"));
+          filename: path.basename("resizeImageFile3.jpg"));*/
 
-      request.files.add(multipartFile1);
-      request.files.add(multipartFile2);
-      request.files.add(multipartFile3);
+      //request.files.add(multipartFile1);
+      //request.files.add(multipartFile2);
+      //request.files.add(multipartFile3);
+      request.fields['runFile2'] = image1B64;
+      request.fields['runFile2ex'] = image2B64;
+      request.fields['runFile2priceTag'] = image3B64;
+
+
 
       request.fields['runDetail2'] = receiveDetail.text;
       request.fields['runPeople2'] = empCodeReceive;
@@ -364,20 +384,22 @@ class _AddProductPageState extends State<AddProductPage> {
       request.fields['unit2Val'] = _currentUnit;
       request.fields['lot'] = receiveLot.text;
 
-      print(request.fields);
-      print(request.files[0].filename);
+      print(request.fields['runFile2']);
+      /*print(request.files[0].filename);
       print(request.files[0].length);
       print(request.files[1].filename);
       print(request.files[1].length);
       print(request.files[2].filename);
-      print(request.files[2].length);
+      print(request.files[2].length);*/
 
       var response = await request.send();
 
       if (response.statusCode == 200) {
 
+        var respStr = await response.stream.bytesToString();
+
         print("add OK");
-        print(response);
+        print(respStr);
         showToastAddFast();
 
         /*loadingAdd = false;
