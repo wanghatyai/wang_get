@@ -408,13 +408,19 @@ class _AddProductPageState extends State<AddProductPage> {
             context,
             MaterialPageRoute(builder: (context) => Home()));*/
 
-       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Home())).then((r){
-            setState(() {
-              loadingAdd = false;
-            });
-      });
+        setState(() {
+          loadingAdd = false;
+        });
+
+        Navigator.of(context).pushNamedAndRemoveUntil('/Home', (Route<dynamic> route) => false);
+
+         /*Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Home())).then((r){
+              setState(() {
+                loadingAdd = false;
+              });
+        });*/
 
       } else {
         print("add Error");
