@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:wang_get/add_product.dart';
 import 'package:wang_get/report.dart';
+import 'package:wang_get/user.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,8 +13,25 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
+  var username;
+
   int currentIndex = 0;
-  List pages = [AddProductPage(), ReportPage()];
+  List pages = [AddProductPage(), ReportPage(), UserPage()];
+
+  getCodeEmpReceive() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString("empCodeReceive");
+    });
+    return username;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCodeEmpReceive();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +56,17 @@ class _HomeState extends State<Home> {
               icon: Icon(Icons.view_list),
               title: Text('รายงาน', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.perm_identity),
+              title: Text('ผู้ใช้', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+          ),
         ]
     );
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text("ระบบรับสินค้า"),
+        title: Text("ระบบรับสินค้า-$username"),
         actions: <Widget>[
 
         ],
