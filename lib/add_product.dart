@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:async/async.dart';
+//import 'package:async/async.dart';
 import 'package:path/path.dart' as path;
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
