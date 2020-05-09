@@ -142,13 +142,14 @@ class _AddProductPageState extends State<AddProductPage> {
       return;
     }
 
-    searchProduct(text);
-
-    _product.forEach((f){
-      if(f.productName.contains(text)) _search.add(f);
+    setState(() {
+      searchProduct(text);
     });
+    /*_product.forEach((f){
+      if(f.productName.contains(text)) _search.add(f);
+    });*/
 
-    setState(() {});
+    //setState(() {});
   }
 
   scanBarcode() async {
@@ -408,13 +409,19 @@ class _AddProductPageState extends State<AddProductPage> {
             context,
             MaterialPageRoute(builder: (context) => Home()));*/
 
-       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Home())).then((r){
-            setState(() {
-              loadingAdd = false;
-            });
-      });
+        setState(() {
+          loadingAdd = false;
+        });
+
+        Navigator.of(context).pushNamedAndRemoveUntil('/Home', (Route<dynamic> route) => false);
+
+         /*Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Home())).then((r){
+              setState(() {
+                loadingAdd = false;
+              });
+        });*/
 
       } else {
         print("add Error");
@@ -435,7 +442,7 @@ class _AddProductPageState extends State<AddProductPage> {
         msg: "เพิ่มรายการแล้ว",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIos: 3
+        timeInSecForIosWeb: 3
     );
   }
 

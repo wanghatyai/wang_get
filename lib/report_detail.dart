@@ -66,7 +66,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         msg: "ลบรายการแล้ว",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIos: 3
+        timeInSecForIosWeb: 3
     );
   }
 
